@@ -510,14 +510,11 @@ def play(
                     "inputstream": "inputstream.adaptive",
                     "inputstream.adaptive.stream_selection_type": selectionType,
                     "inputstream.adaptive.chooser_resolution_secure_max": "4K",
+                    "inputstream.adaptive.stream_headers": urlencode(headers),
                     "inputstream.adaptive.manifest_headers": urlencode(headers),
-                    "inputstream.adaptive.manifest_type": "mpd" if isMpd else "hls",
-                    "inputstream.adaptive.license_type": "com.widevine.alpha",
-                    "inputstream.adaptive.license_key": "|".join(
-                        license_config.values()
-                    )
-                    if isMpd
-                    else "|" + urlencode(headers) + "|R{SSM}|",
+                    "inputstream.adaptive.manifest_type": "hls",
+                    "inputstream.adaptive.license_type": "drm",
+                    "inputstream.adaptive.license_key": "?Content-Type=application/octet-stream|"+ urlencode(headers) + "|R{SSM}|",
                 },
             }
         )
