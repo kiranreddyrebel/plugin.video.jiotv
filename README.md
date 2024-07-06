@@ -23,4 +23,4 @@ This plugin is not officially commissioned/supported by Jio. The trademark "Jio"
 5. Then install jio plugin from this repo
 
 
-[**Download**] Download this repo as zip and follow the old setup guide (from tobalan) and install this jio plugin
+[**Download**] Download this repo as zip and follow the old setup guide (from tobalan) and install this jio plugin - https://github.com/kiranreddyrebel/plugin.video.jiotv/releases/download/jiotv_2024_kodi_plugin/plugin.video.jiotv-kiran.zip
