@@ -78,7 +78,7 @@
 				</setting>
 				<setting help="" id="epgsource" label="33008" type="string">
 					<level>0</level>
-					<default>https://tobalan.github.io/epg.xml.gz</default>
+					<default>https://kiranreddyrebel.github.io/epg.xml.gz</default>
 					<control format="string" type="edit">
 						<heading>33008</heading>
 					</control>
