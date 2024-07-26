@@ -60,6 +60,7 @@ import requests
 import gzip
 import xml.etree.ElementTree as ET
 import os
+import json
 
 # Root path of plugin
 
@@ -321,7 +322,7 @@ def show_category(plugin, categoryOrLang, by):
 @Route.register
 def show_epg(plugin, day, channel_id):
     resp = urlquick.get(
-        CATCHUP_SRC.format(day, channel_id), verify=False, max_age=-1
+        CATCHUP_SRC.format(day, channel_id), max_age=-1
     ).json()
     epg = sorted(resp["epg"], key=lambda show: show["startEpoch"], reverse=False)
     livetext = "[COLOR red] [ LIVE ] [/COLOR]"
@@ -435,7 +436,6 @@ def play(
             verify=False,
             headers=getChannelHeadersWithHost() if enableHost else getChannelHeaders(),
             max_age=-1,
-            raise_for_status=True,
         )
         # if res.status_code
         resp = res.json()
@@ -453,7 +453,12 @@ def play(
         if isMpd:
             # is mpd url
             license_headers = headers
-            license_headers["Content-type"] = "application/octet-stream"
+            license_headers["Content-type"] = urlencode("application/octet-stream")
+	    
+
+
+
+
             if Settings.get_boolean("mpdnotice"):
                 Script.notify(
                     "Notice!", "Using the Experimental MPD URL", icon=Script.NOTIFY_INFO
@@ -509,17 +514,18 @@ def play(
                     "IsPlayable": True,
                     "inputstream": "inputstream.adaptive",
                     "inputstream.adaptive.stream_selection_type": selectionType,
-                    "inputstream.adaptive.chooser_resolution_secure_max": "4K",
+                    "inputstream.adaptive.chooser_resolution_secure_max": "4k",
                     "inputstream.adaptive.stream_headers": urlencode(headers),
                     "inputstream.adaptive.manifest_headers": urlencode(headers),
-                    "inputstream.adaptive.manifest_type": "hls",
+                    "inputstream.adaptive.manifest_type": "mpd" if isMpd else "hls",
                     "inputstream.adaptive.license_type": "drm",
-                    "inputstream.adaptive.license_key": "?Content-Type=application/octet-stream|"+ urlencode(headers) + "|R{SSM}|",
+                    "inputstream.adaptive.license_key": "?"+urlencode("Content-type=application/octet-stream")+"|"+ urlencode(headers) + "|R{SSM}|" if isMpd
+                    else "|" + urlencode(headers) + "|R{SSM}|",
                 },
             }
         )
     except Exception as e:
-        Script.notify("Error while playback , Check connection", e)
+        Script.notify("headers - Error while playback , Check connection", e)
         return False
 
 
