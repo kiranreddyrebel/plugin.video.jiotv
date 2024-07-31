@@ -278,16 +278,15 @@ def getChannelHeaders():
     headers = getHeaders()
     print(headers)
     return {
-        "accesstoken": headers["ssotoken"],
         "ssoToken": headers["ssotoken"],
         "userId": headers["userid"],
         "uniqueId": headers["uniqueid"],
         "crmid": headers["crmid"],
-        "user-agent": "okhttp/4.2.2",
+        "user-agent": "Mozilla/5.0 (Mobile; LYF/LF-2403N/LYF-LF2403N-001-02-21-110119;Android; rv:48.0) Gecko/48.0 Firefox/48.0 KAIOS/2.5",
         "deviceid": headers["deviceId"],
         "devicetype": "phone",
-        "os": "android",
-        "osversion": "9",
+        "os": "B2G",
+        "osversion": "2.5",
         "versioncode": "353",
     }
 
@@ -296,7 +295,7 @@ def getChannelHeadersWithHost():
     return {
         "deviceType": "phone",
         "host": "tv.media.jio.com",
-        "os": "android",
+        "os": "B2G",
         "versioncode": "343",
         "Conetent-Type": "application/json",
     }
