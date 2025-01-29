@@ -1,3 +1,7 @@
+[- 2.3.13-]
+[updated] added epg.xml.gz link
+[- 2.3.12-]
+[updated] Useragent to LYF device in utils - thanks to GitHub users in my repo
 [- 2.3.9 -]
 [added] Revamped settings.xml and added strings.po
 
