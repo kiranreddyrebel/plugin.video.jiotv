@@ -32,7 +32,7 @@ EPG_PATH = os.path.join(translatePath(
 
 M3U_CHANNEL = "\n#EXTINF:0 tvg-id=\"{tvg_id}\" tvg-name=\"{channel_name}\" group-title=\"{group_title}\" tvg-chno=\"{tvg_chno}\" tvg-logo=\"{tvg_logo}\"{catchup},{channel_name}\n{play_url}"
 
-EPG_SRC = "https://tobalan.github.io/epg.xml.gz"
+EPG_SRC = "https://raw.githubusercontent.com/testingweb624/jioEpg/refs/heads/main/epg.xml.gz"
 #EPG_SRC = ADDON.getSetting("epgsource")
 
 DICTIONARY_URL = "https://jiotvapi.cdn.jio.com/apis/v1.3/dictionary/dictionary?langId=6"
