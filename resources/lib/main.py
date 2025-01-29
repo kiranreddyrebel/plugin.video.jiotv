@@ -653,7 +653,7 @@ def epg_setup(plugin):
     # Download EPG XML file
     url = Settings.get_string("epgurl")
     if not url or (len(url) < 5):
-        url = "https://cdn.jsdelivr.net/gh/mitthu786/tvepg/epg.xml.gz"
+        url = "https://raw.githubusercontent.com/testingweb624/jioEpg/refs/heads/main/epg.xml.gz"
     payload = {}
     headers = {}
     response = requests.request("GET", url, headers=headers, data=payload)
