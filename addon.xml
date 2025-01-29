@@ -25,6 +25,8 @@
         <email>kodi@botallen.com</email>
         <source>https://github.com/kiranreddyrebel/plugin.video.jiotv</source>
         <news>
+	    [- 2.3.13 -]
+ 	    [added] epg.xml.gz new server link
 	    [- 2.3.11 -]
             [added] Fixed type (mpd or hls)-reverted to back to earlier
             [- 2.3.10 -]
