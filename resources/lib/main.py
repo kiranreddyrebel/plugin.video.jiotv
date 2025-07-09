@@ -11,6 +11,9 @@ from codequick import Route, run, Listitem, Resolver, Script
 from codequick.utils import keyboard
 from codequick.script import Settings
 from codequick.storage import PersistentDict
+import xbmc
+import xbmcplugin
+import xbmcgui
 
 # add-on imports
 from resources.lib.utils import (
@@ -23,6 +26,7 @@ from resources.lib.utils import (
     sendOTPV2,
     get_local_ip,
     getChannelHeaders,
+    getSonyHeaders,
     getChannelHeadersWithHost,
     quality_to_enum,
     _setup,
@@ -410,6 +414,7 @@ def play(
     # Script.notify("srno", srno)
     # Script.notify("showtime", showtime)
     # Script.notify("channel_id", channel_id)
+    headerssony = getSonyHeaders()
     try:
         is_helper = inputstreamhelper.Helper("mpd", drm="com.widevine.alpha")
         hasIs = is_helper.check_inputstream()
@@ -430,13 +435,74 @@ def play(
         headers["channelid"] = str(channel_id)
         headers["srno"] = str(uuid4()) if "srno" not in rjson else rjson["srno"]
         enableHost = Settings.get_boolean("enablehost")
-        res = urlquick.post(
-            GET_CHANNEL_URL,
-            json=rjson,
+
+        if(channel_id in ["154", "181", "182", "183", "289", "291", "471","483"]):
+
+            
+
+            sony_headers = getSonyHeaders()
+
+
+
+            if not sony_headers:
+
+                Script.notify("Error", "getSonyHeaders() returned None")
+
+                return False
+
+
+
+            if "user-agent" not in sony_headers:
+
+                Script.notify("Error", "'user-agent' missing in Sony headers")
+
+                return False
+
+            if(channel_id in ["154","471"]):  #sonysab channel checking ids
+
+                chan="471"
+
+            else:
+
+                chan=str(channel_id)
+
+            res = urlquick.post(
+
+            "https://jiotvapi.media.jio.com/playback/apis/v1/geturl?langId=6",
+
+            data="stream_type=Seek&channel_id="+chan,
+
             verify=False,
-            headers=getChannelHeadersWithHost() if enableHost else getChannelHeaders(),
+
+            headers=sony_headers,
+
             max_age=-1,
-        )
+
+            )#471 sab
+
+            print(res)
+
+            sonyheaders = sony_headers
+
+            sonyheaders["cookie"] = "__hdnea__" + res.json().get("result", "").split("__hdnea__")[-1]
+
+            sonyheaders.setdefault("user-agent", "jiotv")
+
+            sonyheaders = {k: str(v) for k, v in sonyheaders.items() if v}
+
+            print("printing sony headers and cookie")
+
+            print(sonyheaders)
+
+        else:
+
+            res = urlquick.post(
+                GET_CHANNEL_URL,
+                json=rjson,
+                verify=False,
+                headers=getChannelHeadersWithHost() if enableHost else getChannelHeaders(),
+                max_age=-1,
+            )
         # if res.status_code
         resp = res.json()
         art = {}
@@ -476,9 +542,12 @@ def play(
         if qltyopt == "Manual":
             selectionType = "manual-osd"
         if not isMpd and not qltyopt == "Manual":
-            m3u8Headers = {}
-            m3u8Headers["user-agent"] = headers["user-agent"]
-            m3u8Headers["cookie"] = cookie
+            m3u8Headers = {
+        "user-agent": "jiotv",
+        "cookie": headers["cookie"],
+        "content-type": "application/vnd.apple.mpegurl",
+        "Accesstoken": headerssony["Accesstoken"]
+    }
             m3u8Res = urlquick.get(
                 uriToUse,
                 headers=m3u8Headers,
@@ -486,6 +555,7 @@ def play(
                 max_age=-1,
                 raise_for_status=True,
             )
+            m3u8Headers = {k: str(v) for k, v in m3u8Headers.items() if v}
             # Script.notify("m3u8url", m3u8Res.status_code)
             m3u8String = m3u8Res.text
             variant_m3u8 = m3u8.loads(m3u8String)
@@ -493,18 +563,37 @@ def play(
                 variant_m3u8.version is None or variant_m3u8.version < 7
             ):
                 quality = quality_to_enum(qltyopt, len(variant_m3u8.playlists))
+                tmpurl = variant_m3u8.playlists[quality].uri
                 if isCatchup:
                     tmpurl = variant_m3u8.playlists[quality].uri
                     if "?" in tmpurl:
                         uriToUse = uriToUse.split("?")[0].replace(onlyUrl, tmpurl)
                     else:
                         uriToUse = uriToUse.replace(onlyUrl, tmpurl.split("?")[0])
-                    del headers["cookie"]
-                else:
-                    uriToUse = uriToUse.replace(
-                        onlyUrl, variant_m3u8.playlists[quality].uri
-                    )
+                    #del headers["cookie"]
+                #else:
+                #    uriToUse = uriToUse.replace(
+                #        onlyUrl, tmpurl
+                #    )
         Script.log(uriToUse, lvl=Script.INFO)
+        
+        if(channel_id in ["471", "154", "181", "182", "183", "289", "291","483","154"]):
+
+            listitem = xbmcgui.ListItem(path=uriToUse)
+            listitem.setProperty("IsPlayable", "true")
+            listitem.setProperty("inputstream", "inputstream.adaptive")
+            listitem.setProperty("inputstream.adaptive.manifest_type", "hls")
+            listitem.setProperty("inputstream.adaptive.stream_headers", urlencode(m3u8Headers))
+            listitem.setProperty("inputstream.adaptive.manifest_headers", urlencode(m3u8Headers))
+            listitem.setMimeType("application/vnd.apple.mpegurl")
+            listitem.setContentLookup(False)
+            sony_channels = ["154", "289", "291"]
+            callback_value = uriToUse if channel_id in sony_channels else None
+            xbmc.Player().play(uriToUse, listitem)
+            # Return dummy ListItem to avoid error popup
+            return Listitem().from_dict(**{"label": "Sony","art": art,"callback": callback_value,"properties": {},})
+        else:
+            pass
         return Listitem().from_dict(
             **{
                 "label": plugin._title,
