@@ -138,27 +138,30 @@ def login(username, password, mode="unpw"):
     if resp.get("ssoToken", "") != "":
         _CREDS = {
             "ssotoken": resp.get("ssoToken"),
-            "userid": resp.get("sessionAttributes", {}).get("user", {}).get("uid"),
-            "uniqueid": resp.get("sessionAttributes", {}).get("user", {}).get("unique"),
-            "crmid": resp.get("sessionAttributes", {})
-            .get("user", {})
-            .get("subscriberId"),
-            "subscriberid": resp.get("sessionAttributes", {})
-            .get("user", {})
-            .get("subscriberId"),
+        "userid": resp.get("sessionAttributes", {}).get("user", {}).get("uid"),
+        "uniqueid": resp.get("sessionAttributes", {}).get("user", {}).get("unique"),
+        "crmid": resp.get("sessionAttributes", {}).get("user", {}).get("subscriberId"),
+        "subscriberid": resp.get("sessionAttributes", {}).get("user", {}).get("subscriberId"),
+        "authtoken": resp.get("authToken", ""),
+        "jtoken": resp.get("jToken", ""),
+        "deviceid": resp.get("deviceId", ""),
         }
         headers = {
-            # "deviceId": str(uuid4()),
             "appName": "RJIL_JioTV",
-            "deviceId": "E31BF81FC74E480E8E9C23AA96A80B68",
+            "deviceId": resp.get("deviceId"),
             "devicetype": "phone",
             "os": "android",
             "osversion": "9",
+            "partner": "jiotvvod",
             "user-agent": "plaYtv/7.1.5 (Linux;Android 9) ExoPlayerLib/2.11.7",
             "usergroup": "tvYR7NSNn7rymo3F",
             "versioncode": "343",
+            "platform": "ANDROID_PHONE",
             "dm": "ZUK ZUK Z1",
+            "authtoken":resp.get("authToken"),
+            "ssotoken": resp.get("ssoToken"),
         }
+        
         headers.update(_CREDS)
         with PersistentDict("localdb") as db:
             db["headers"] = headers
@@ -276,13 +279,14 @@ def cleanLocalCache():
 
 def getChannelHeaders():
     headers = getHeaders()
+    print("printing getchannelheaders====")
     print(headers)
     return {
         "ssoToken": headers["ssotoken"],
         "userId": headers["userid"],
         "uniqueId": headers["uniqueid"],
         "crmid": headers["crmid"],
-        "user-agent": "Mozilla/5.0 (Mobile; LYF/LF-2403N/LYF-LF2403N-001-02-21-110119;Android; rv:48.0) Gecko/48.0 Firefox/48.0 KAIOS/2.5",
+        "user-agent": "plaYtv/7.1.5 (Linux;Android 9) ExoPlayerLib/2.11.7",
         "deviceid": headers["deviceId"],
         "devicetype": "phone",
         "os": "B2G",
@@ -290,6 +294,39 @@ def getChannelHeaders():
         "versioncode": "353",
     }
 
+
+def getSonyHeaders():
+    sony=getHeaders()
+    return {
+        "Host": "jiotvapi.media.jio.com",
+            "Appkey": "NzNiMDhlYzQyNjJm",
+            "Devicetype": "phone",
+            "Os": "android",
+            "Deviceid": sony["deviceId"],
+            "Osversion": "11",
+            "Dm": "Google Pixel 5",
+            "Uniqueid": sony["deviceId"],
+            "Usergroup": "tvYR7NSNn7rymo3F",
+            "Languageid": "6",
+            "Userid": sony["userid"],
+            "Sid": "892898ba-f9de-4572-b6c2-e717b0ad",
+            "Crmid": sony["subscriberid"],
+            "Isott": "false",
+            "Channel_id": "471",
+            "Langid": "",
+            "Camid": "",
+            "ssoToken": sony["ssotoken"],
+            "Accesstoken": sony["authtoken"],
+            "Subscriberid": sony["subscriberid"],
+            "analyticsId": sony["deviceId"],
+            "Lbcookie": "1",
+            "Versioncode": "353",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Content-Length": "110",
+            "Accept-Encoding": "gzip, deflate, br",
+            "user-agent": "jiotv",
+            "Connection": "keep-alive",
+    }
 
 def getChannelHeadersWithHost():
     return {
