@@ -6,9 +6,11 @@
   <br>
 </h2>
 
-<h4 align="center">JioTV Kodi Add-on 2024</h4>
+<h4 align="center">JioTV Kodi Add-on 2025</h4>
 
 <br>
+## **Update** 
+Fixed sony and other channels
 
 ## Disclaimer
 
