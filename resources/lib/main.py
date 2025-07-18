@@ -436,7 +436,7 @@ def play(
         headers["srno"] = str(uuid4()) if "srno" not in rjson else rjson["srno"]
         enableHost = Settings.get_boolean("enablehost")
 
-        if(channel_id in ["154", "181", "182", "183", "289", "291", "471","483"]):
+        if(channel_id in ["1401","877", "477", "151", "154", "471","181", "474", "182", "1775","1773","1772","524","892","514","474", "183", "289", "291", "471","483"]):
 
             
 
@@ -577,7 +577,7 @@ def play(
                 #    )
         Script.log(uriToUse, lvl=Script.INFO)
         
-        if(channel_id in ["471", "154", "181", "182", "183", "289", "291","483","154"]):
+        if(channel_id in ["1401","877", "477", "151", "154", "471","181", "474", "182", "1775","1773","1772","524","892","514","474", "183", "289", "291", "471","483"]):
 
             listitem = xbmcgui.ListItem(path=uriToUse)
             listitem.setProperty("IsPlayable", "true")
