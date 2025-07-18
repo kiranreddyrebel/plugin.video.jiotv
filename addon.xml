@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.jiotv" name="JioTV" version="2.3.14" provider-name="kiranreddyrebel">
+<addon id="plugin.video.jiotv" name="JioTV" version="2.3.16" provider-name="kiranreddyrebel">
     <requires>
         <import addon="xbmc.python" version="3.0.0" />
         <import addon="script.module.codequick" version="1.0.2" />
@@ -25,8 +25,12 @@
         <email>kodi@botallen.com</email>
         <source>https://github.com/kiranreddyrebel/plugin.video.jiotv</source>
         <news>
-	    [- 2.3.14 -]
-	    [added] fixes sony and other channels
+	     [- 2.3.16 -]
+            [added] improved zee channels and removed proxy way for faster. No crash
+            [- 2.3.15 -]
+            [added] created a proxy to fetch cookie from zee and added zee channels
+            [- 2.3.14 -]
+            [added] sony channels
 	    [- 2.3.13 -]
  	    [added] epg.xml.gz new server link
 	    [- 2.3.11 -]
