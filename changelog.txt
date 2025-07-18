@@ -1,3 +1,9 @@
+[- 2.3.16 -]
+[added] improved zee channels and removed proxy way for faster. No crash
+[- 2.3.15 -]
+[added] created a proxy to fetch cookie from zee and added zee channels
+[- 2.3.14-]
+[added] added sony channels, new headers and urls
 [- 2.3.13-]
 [updated] added epg.xml.gz link
 [- 2.3.12-]
