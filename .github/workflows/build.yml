@@ -1,0 +1,31 @@
+name: Build Flutter macOS App
+
+on:
+  push:
+    branches:
+      - feature/flutter-desktop-app
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: cd jiotv_flutter && flutter pub get
+
+      - name: Build macOS app
+        run: cd jiotv_flutter && flutter build macos
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: jiotv-flutter-macos-build
+          path: jiotv_flutter/build/macos/Build/Products/Release/jiotv_flutter.app
