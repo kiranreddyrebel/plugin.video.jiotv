@@ -153,9 +153,9 @@ def login(username, password, mode="unpw"):
             "os": "android",
             "osversion": "9",
             "partner": "jiotvvod",
-            "user-agent": "plaYtv/7.1.5 (Linux;Android 9) ExoPlayerLib/2.11.7",
+            "user-agent": "User-Agent: plaYtv/7.1.4 (Linux;Android 10) 1.0",
             "usergroup": "tvYR7NSNn7rymo3F",
-            "versioncode": "343",
+            "versioncode": "396",
             "platform": "ANDROID_PHONE",
             "dm": "ZUK ZUK Z1",
             "authtoken":resp.get("authToken"),
@@ -222,7 +222,7 @@ def getCachedChannels():
             try:
                 channelListResp = json.load(
                     urllib.request.urlopen(
-                        "https://jiotvapi.cdn.jio.com/apis/v3.0/getMobileChannelList/get/?langId=6&devicetype=phone&os=android&usertype=JIO&version=343"
+                        "https://jiotvapi.cdn.jio.com/apis/v3.0/getMobileChannelList/get/?langId=6&devicetype=phone&os=android&usertype=JIO&version=396"
                     )
                 ).get("result")
                 db["channelList"] = channelListResp
@@ -259,7 +259,7 @@ def getFeatured():
                 "usergroup": "tvYR7NSNn7rymo3F",
                 "os": "android",
                 "devicetype": "phone",
-                "versionCode": "343",
+                "versionCode": "396",
             },
             max_age=-1,
         ).json()
@@ -286,12 +286,12 @@ def getChannelHeaders():
         "userId": headers["userid"],
         "uniqueId": headers["uniqueid"],
         "crmid": headers["crmid"],
-        "user-agent": "plaYtv/7.1.5 (Linux;Android 9) ExoPlayerLib/2.11.7",
+        "user-agent": "User-Agent: plaYtv/7.1.4 (Linux;Android 10) 1.0",
         "deviceid": headers["deviceId"],
         "devicetype": "phone",
         "os": "B2G",
-        "osversion": "2.5",
-        "versioncode": "353",
+        "osversion": "11",
+        "versioncode": "396",
     }
 
 
@@ -312,7 +312,7 @@ def getSonyHeaders():
             "Sid": "892898ba-f9de-4572-b6c2-e717b0ad",
             "Crmid": sony["subscriberid"],
             "Isott": "false",
-            "Channel_id": "471",
+            #"Channel_id": "471",
             "Langid": "",
             "Camid": "",
             "ssoToken": sony["ssotoken"],
@@ -320,11 +320,11 @@ def getSonyHeaders():
             "Subscriberid": sony["subscriberid"],
             "analyticsId": sony["deviceId"],
             "Lbcookie": "1",
-            "Versioncode": "353",
+            "Versioncode": "396",
             "Content-Type": "application/x-www-form-urlencoded",
             "Content-Length": "110",
             "Accept-Encoding": "gzip, deflate, br",
-            "user-agent": "jiotv",
+            "user-agent": "okhttp/4.12.0",
             "Connection": "keep-alive",
     }
 
@@ -333,7 +333,7 @@ def getChannelHeadersWithHost():
         "deviceType": "phone",
         "host": "tv.media.jio.com",
         "os": "B2G",
-        "versioncode": "343",
+        "versioncode": "396",
         "Conetent-Type": "application/json",
     }
 
