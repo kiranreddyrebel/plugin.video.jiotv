@@ -432,6 +432,7 @@ def play(
             rjson["end"] = end
             Script.log(str(rjson), lvl=Script.INFO)
         headers = getHeaders()
+        sony_headers = getSonyHeaders()
         headers["channelid"] = str(channel_id)
         headers["srno"] = str(uuid4()) if "srno" not in rjson else rjson["srno"]
         enableHost = Settings.get_boolean("enablehost")
@@ -495,13 +496,19 @@ def play(
             print(sonyheaders)
 
         else:
-
+            chan=str(channel_id)
             res = urlquick.post(
-                GET_CHANNEL_URL,
-                json=rjson,
-                verify=False,
-                headers=getChannelHeadersWithHost() if enableHost else getChannelHeaders(),
-                max_age=-1,
+
+            "https://jiotvapi.media.jio.com/playback/apis/v1/geturl?langId=6",
+
+            data="stream_type=Seek&channel_id="+chan,
+
+            verify=False,
+
+            headers=sony_headers,
+
+            max_age=-1,
+
             )
         # if res.status_code
         resp = res.json()
