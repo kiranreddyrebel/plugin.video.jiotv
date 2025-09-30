@@ -13,14 +13,15 @@ IMG_CATCHUP = "https://jiotv.catchup.cdn.jio.com/dare_images/images/"
 IMG_CATCHUP_SHOWS = "https://jiotv.catchup.cdn.jio.com/dare_images/shows/"
 PLAY_URL = "plugin://plugin.video.jiotv/resources/lib/main/play/?"
 
-FEATURED_SRC = "https://tv.media.jio.com/apis/v1.6/getdata/featurednew?start=0&limit=30&langId=6"
+FEATURED_SRC = "https://tv.media.jio.com/apis/v1.4/getdata/featurednew?start=0&limit=30&langId=6"
 
 
-CHANNELS_SRC_NEW = "https://jiotvapi.cdn.jio.com/apis/v3.0/getMobileChannelList/get/?langId=6&devicetype=phone&os=android&usertype=JIO&version=343"
+CHANNELS_SRC_NEW = "https://jiotvapi.cdn.jio.com/apis/v1.4/getMobileChannelList/get/?langId=6&devicetype=phone&os=android&usertype=JIO&version=396"
 
-CHANNELS_SRC = "https://jiotvapi.cdn.jio.com/apis/v3.0/getMobileChannelList/get/?langId=6&devicetype=phone&os=android&usertype=JIO&version=343"
+CHANNELS_SRC = "https://jiotvapi.cdn.jio.com/apis/v1.4/getMobileChannelList/get/?langId=6&devicetype=phone&os=android&usertype=JIO&version=396"
 
-GET_CHANNEL_URL = "https://tv.media.jio.com/apis/v2.0/getchannelurl/getchannelurl?langId=6&userLanguages=All"
+#GET_CHANNEL_URL = "https://tv.media.jio.com/apis/v1.4/getchannelurl/getchannelurl?langId=6&userLanguages=All"
+GET_CHANNEL_URL = "https://jiotvapi.media.jio.com/playback/apis/v1/geturl"
 
 CATCHUP_SRC = "https://jiotvapi.cdn.jio.com/apis/v1.3/getepg/get?offset={0}&channel_id={1}&langId=6"
 
