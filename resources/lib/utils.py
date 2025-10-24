@@ -21,6 +21,8 @@ from contextlib import contextmanager
 from collections import defaultdict
 import socket
 import json
+import requests
+import re
 import ssl
 import urllib.request
 
@@ -153,7 +155,7 @@ def login(username, password, mode="unpw"):
             "os": "android",
             "osversion": "9",
             "partner": "jiotvvod",
-            "user-agent": "User-Agent: plaYtv/7.1.4 (Linux;Android 10) 1.0",
+            "user-agent": "plaYtv/7.1.5 (Linux;Android 9) ExoPlayerLib/2.11.7",
             "usergroup": "tvYR7NSNn7rymo3F",
             "versioncode": "396",
             "platform": "ANDROID_PHONE",
@@ -286,12 +288,12 @@ def getChannelHeaders():
         "userId": headers["userid"],
         "uniqueId": headers["uniqueid"],
         "crmid": headers["crmid"],
-        "user-agent": "User-Agent: plaYtv/7.1.4 (Linux;Android 10) 1.0",
+        "user-agent": "plaYtv/7.1.5 (Linux;Android 9) ExoPlayerLib/2.11.7",
         "deviceid": headers["deviceId"],
         "devicetype": "phone",
         "os": "B2G",
-        "osversion": "11",
-        "versioncode": "396",
+        "osversion": "2.5",
+        "versioncode": "353",
     }
 
 
@@ -312,7 +314,7 @@ def getSonyHeaders():
             "Sid": "892898ba-f9de-4572-b6c2-e717b0ad",
             "Crmid": sony["subscriberid"],
             "Isott": "false",
-            #"Channel_id": "471",
+            "Channel_id": "471",
             "Langid": "",
             "Camid": "",
             "ssoToken": sony["ssotoken"],
@@ -320,13 +322,92 @@ def getSonyHeaders():
             "Subscriberid": sony["subscriberid"],
             "analyticsId": sony["deviceId"],
             "Lbcookie": "1",
-            "Versioncode": "396",
+            "Versioncode": "353",
             "Content-Type": "application/x-www-form-urlencoded",
             "Content-Length": "110",
             "Accept-Encoding": "gzip, deflate, br",
-            "user-agent": "okhttp/4.12.0",
+            "user-agent": "jiotv",
             "Connection": "keep-alive",
     }
+
+# Zee5 headers
+
+def getZeeHeaders(host=None):
+    return {
+    "Host": host,
+    "accept": "*/*",
+    "accept-encoding": "gzip, deflate, br, zstd",
+    "accept-language": "en-US,en;q=0.9",
+    "origin": "https://www.zee5.com",
+    "priority": "u=1, i",
+    "referer": "https://www.zee5.com/",
+    "sec-ch-ua": '"Google Chrome";v="141", "Not?A_Brand";v="8", "Chromium";v="141"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"Windows"',
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-site",
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+}
+    
+def zeeCookie(zee_channelid=None):
+    url = "https://spapi.zee5.com/singlePlayback/getDetails/secure"
+    params = {
+        "channel_id": zee_channelid,
+        "device_id": "90abf228-06b1-42ae-aa65-4979df5bcef6",
+        "platform_name": "desktop_web",
+        "translation": "en",
+        "user_language": "te",
+        "country": "IN",
+        "state": "TS",
+        "app_version": "4.26.1",
+        "user_type": "guest",
+        "check_parental_control": "false",
+        "ppid": "90abf228-06b1-42ae-aa65-4979df5bcef6",
+        "version": "12"
+    }
+
+    json_data = {
+        "x-access-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybV9jb2RlIjoiV2ViQCQhdDM4NzEyIiwiaXNzdWVkQXQiOiIyMDI1LTEwLTIyVDAzOjQ4OjA1LjAyOVoiLCJwcm9kdWN0X2NvZGUiOiJ6ZWU1QDk3NSIsInR0bCI6ODY0MDAwMDAsImlhdCI6MTc2MTEwNDg4NX0.8HnOYX7GmvGGWWiPfYPlvJk55Bzmjd1qEQIx6ueOnCs",
+        "X-Z5-Guest-Token": "90abf228-06b1-42ae-aa65-4979df5bcef6",
+        "x-dd-token": "eyJzY2hlbWFfdmVyc2lvbiI6IjEiLCJvc19uYW1lIjoiTi9BIiwib3NfdmVyc2lvbiI6Ik4vQSIsInBsYXRmb3JtX25hbWUiOiJDaHJvbWUiLCJwbGF0Zm9ybV92ZXJzaW9uIjoiMTA0IiwiZGV2aWNlX25hbWUiOiIiLCJhcHBfbmFtZSI6IldlYiIsImFwcF92ZXJzaW9uIjoiMi41Mi4zMSIsInBsYXllcl9jYXBhYmlsaXRpZXMiOnsiYXVkaW9fY2hhbm5lbCI6WyJTVEVSRU8iXSwidmlkZW9fY29kZWMiOlsiSDI2NCJdLCJjb250YWluZXIiOlsiTVA0IiwiVFMiXSwicGFja2FnZSI6WyJEQVNIIiwiSExTIl0sInJlc29sdXRpb24iOlsiMjQwcCIsIlNEIiwiSEQiLCJGSEQiXSwiZHluYW1pY19yYW5nZSI6WyJTRFIiXX0sInNlY3VyaXR5X2NhcGFiaWxpdGllcyI6eyJlbmNyeXB0aW9uIjpbIldJREVWSU5FX0FFU19DVFIiXSwid2lkZXZpbmVfc2VjdXJpdHlfbGV2ZWwiOlsiTDMiXSwiaGRjcF92ZXJzaW9uIjpbIkhEQ1BfVjEiLCJIRENQX1YyIiwiSERDUF9WMl8xIiwiSERDUF9WMl8yIl19fQ=="
+    }
+
+    headers = {
+        "accept": "application/json",
+        "accept-encoding": "gzip, deflate, br",
+        "accept-language": "en-US,en;q=0.9",
+        "origin": "https://www.zee5.com",
+        "referer": "https://www.zee5.com/",
+        "content-type": "application/json",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    }
+
+    try:
+        resp = requests.post(url, headers=headers, params=params, json=json_data, timeout=15)
+        print("Status:", resp.status_code)
+        if resp.status_code == 403:
+            print("⚠️ Forbidden — Token or signature likely expired")
+            return None
+        result = resp.json()
+    except Exception as e:
+        print("❌ Network error:", e)
+        return None
+
+    m3u8_response = result.get("keyOsDetails", {}).get("video_token")
+    if not m3u8_response:
+        print("⚠️ video_token missing")
+        return None
+
+    print("✅ video_token URL:", m3u8_response)
+
+    cookie = "?" + m3u8_response.split("?", 1)[1] if "?" in m3u8_response else ""
+    print("->", cookie)
+
+    return cookie
+    
+        
+
 
 def getChannelHeadersWithHost():
     return {
